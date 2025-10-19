@@ -14,6 +14,8 @@ Create a Unified Conversation-based Portal that will aid in the process of job s
 
     3. Understanding details regarding all currently popular job application portals. Which sites will allow automated applications? Should the scale of the product start from these easy-to-apply job portals, or do I go down the rabbit hole of scraping through interests of the user's companies to keep tabs on said interest and apply if anything comes up?
 
+    4. Understanding what a conversation should even represent in this aspect. Should I give the ability to create new conversational threads? Do I keep creation of profile thread (singular, if no new profile wants to be created, i.e., one profile one chat)? Do I allow the creation of new conversational threads, assuming they just want to be able to see the jobs posted according to the filters they selected themselves, embedded on the UI itself?
+
 ## All Initial Moving Pieces 
 
     1. A Conversational Flow — to let the user interact with the system in a seamless way, with multi-language support.
@@ -53,3 +55,16 @@ Create a Unified Conversation-based Portal that will aid in the process of job s
         b. Application progress.
         c. Application rejection/acceptance.
         d. Interview setup date, if acceptance.
+        e. If interview is set up, mark in the calendar of the user to ensure a basic email/in-app notification isn't forgotten.
+    3. Metrics?
+    4. Application submission failure, leading to fallback, should apply again.
+
+## Frontend Functionality
+
+    1. A cohesive, easy-on-the-eyes UI with subtle colors and an understated yet stylish font (Avenir-like)
+    2. Accessibility buttons
+        a. Attach Resume
+        b. Create Profile (initiates a new conversation if user wants to create a new profile by ditching the existing one)
+        c. Edit Profile (change details regarding the existing profile; will lead to a new conversational interface where the user will be given a rundown of what exists, then they can select what to edit and do as required)
+        d. Export Resume and Cover Letter feature
+    3. A walkthrough-style initial application setup run-through, the first conversation ever, like a guide.
