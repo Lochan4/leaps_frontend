@@ -1,4 +1,4 @@
-## Initial concept for an Inhouse ATS checker. 
+## Proprietary ATS Suitability Evaluation Tool
 
 ```mermaid
 %%{init: {"theme":"dark","flowchart":{"curve":"basis"}}}%%
