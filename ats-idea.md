@@ -36,11 +36,11 @@ flowchart TD
         C4 --> D1
     end
 
-    subgraph D["Semantic Matching / LLM Support"]
-        D1["Invoke LLM Module (pass feature vector + raw texts + sub-scores)"]
+    subgraph D["Semantic Matching / AI Agent Powered Analysis"]
+        D1["Invoke AI Agent Module (pass feature vector + raw texts + sub-scores)"]
         D2["Semantic Equivalence Analysis (e.g., 'Project X' maps to required skill Y)"]
-        D3["LLM-Generated Explanation & Suggestions"]
-        D4["Adjust Sub-scores / Flags (if LLM finds synonyms/format issues etc.)"]
+        D3["AI Agent-Generated Explanation & Suggestions"]
+        D4["Adjust Sub-scores / Flags (if AI Agent finds synonyms/format issues etc.)"]
         D1 --> D2
         D2 --> D3
         D2 --> D4
