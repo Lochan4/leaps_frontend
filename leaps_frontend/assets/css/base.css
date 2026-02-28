@@ -1,0 +1,127 @@
+/**
+ * leaps.to — Base Styles
+ * Reset, typography foundation, layout primitives, utilities.
+ * No component-specific rules here.
+ */
+
+/* ── Reset ──────────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin:     0;
+  padding:    0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  background:  var(--bg);
+  color:       var(--navy);
+  overflow-x:  hidden;
+}
+
+/* ── Layout container ───────────────────────────────────────────────────── */
+.container {
+  max-width: 1440px;
+  margin:    0 auto;
+  padding:   0 max(20px, 6.1vw);
+}
+
+/* ── Typography utilities ───────────────────────────────────────────────── */
+
+/* All-caps label above headings */
+.section-label {
+  font-size:      16px;
+  font-weight:    700;
+  color:          var(--navy-muted);
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  margin-bottom:  20px;
+}
+
+/* Italic closing line, separated by top border */
+.section-footer {
+  border-top:    2px solid var(--border-mid);
+  padding-top:   20px;
+  margin-top:    32px;
+  font-style:    italic;
+  font-weight:   500;
+  font-size:     16px;
+  color:         var(--navy-muted);
+  line-height:   1.5;
+}
+
+/* heading-xl — primary slide heading (60px at reference canvas) */
+.heading-xl {
+  font-size:      clamp(34px, 4.2vw, 60px);
+  font-weight:    800;
+  color:          var(--navy);
+  letter-spacing: -2px;
+  line-height:    1.05;
+  margin-bottom:  24px;
+}
+
+/* Italic sub-context below a heading */
+.heading-insight {
+  font-size:    18px;
+  font-style:   italic;
+  font-weight:  600;
+  color:        var(--navy-muted);
+  line-height:  1.55;
+}
+
+/* Heading used above card grids */
+.features-heading {
+  font-size:      clamp(32px, 4vw, 50px);
+  font-weight:    800;
+  color:          var(--navy);
+  letter-spacing: -2px;
+  line-height:    1.05;
+}
+
+.features-subline {
+  display:      block;
+  font-style:   italic;
+  font-weight:  600;
+  font-size:    clamp(16px, 1.8vw, 22px);
+  letter-spacing: 0;
+  color:        var(--navy-muted);
+  margin-top:   10px;
+}
+
+/* ── Pattern A — Left panel / Right content split ───────────────────────── */
+.split-layout {
+  display:               grid;
+  grid-template-columns: 40% 60%;
+}
+
+.split-left {
+  padding-right: 52px;
+  border-right:  2px solid var(--border-mid);
+}
+
+.split-right {
+  padding-left: 52px;
+}
+
+/* ── Scroll reveal animation ────────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+.fade-in {
+  opacity:    0;
+  transform:  translateY(22px);
+  transition: opacity  var(--transition-reveal),
+              transform var(--transition-reveal);
+}
+
+.fade-in.visible {
+  opacity:   1;
+  transform: translateY(0);
+}

@@ -1,0 +1,67 @@
+.heroSection {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  padding-top: calc(var(--section-pad) + 64px); /* account for fixed nav */
+  padding-bottom: var(--section-pad);
+}
+
+.inner {
+  max-width: 840px;
+}
+
+.label {
+  margin-bottom: 28px;
+}
+
+/* ── Headline split — problem / solution contrast ── */
+.headline {
+  font-size: var(--display);
+  line-height: 1.0;
+  letter-spacing: -3px;
+  margin-bottom: 32px;
+}
+
+/* Problem lines — light weight, muted. The before. */
+.headlineProblem {
+  font-weight: 300;
+  font-style: italic;
+  color: var(--navy-muted);
+  display: block;
+}
+
+/* Solution lines — maximum weight, full color. The answer. */
+.headlineSolution {
+  font-weight: 900;
+  font-style: normal;
+  color: var(--navy);
+  display: block;
+}
+
+.subline {
+  font-size: var(--body-lg);
+  font-weight: 400;
+  color: var(--navy-muted);
+  line-height: 1.65;
+  max-width: 560px;
+  margin-bottom: 48px;
+}
+
+.actions {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .headline {
+    letter-spacing: -2px;
+  }
+  .actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

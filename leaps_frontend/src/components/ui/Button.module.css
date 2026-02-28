@@ -1,0 +1,54 @@
+.btn {
+  display: inline-block;
+  font-family: var(--font);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  padding: 16px 36px;
+  cursor: pointer;
+  text-decoration: none;
+  border: none;
+  line-height: 1;
+  white-space: nowrap;
+  transition: opacity var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+}
+
+/* ── Primary — navy bg, amber text ── */
+.primary {
+  background: var(--navy);
+  color: var(--bg);
+}
+
+.primary:hover {
+  opacity: 0.80;
+}
+
+/* ── Primary Invert — amber bg, navy text ── */
+.primaryInvert {
+  background: #FCEFD9;
+  color: var(--navy);
+}
+
+.primaryInvert:hover {
+  opacity: 0.88;
+}
+
+/* ── Outline — transparent, uses section theme vars ── */
+.outline {
+  background: transparent;
+  color: var(--fg-muted);
+  border: 1.5px solid var(--rule-mid);
+  padding: 14px 36px;
+}
+
+.outline:hover {
+  color: var(--fg);
+  border-color: var(--fg);
+}
+
+/* ── Disabled state ── */
+.btn:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}

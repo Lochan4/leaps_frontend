@@ -1,0 +1,179 @@
+.header {
+  margin-bottom: 56px;
+}
+
+.headline {
+  font-size: var(--h1);
+  font-weight: 800;
+  color: var(--fg);
+  letter-spacing: -2px;
+  line-height: 1.0;
+  margin-bottom: 12px;
+}
+
+.subline {
+  font-size: var(--body-lg);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--fg-muted);
+}
+
+/* ── Pricing grid ── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+/* ── Card ── */
+.card {
+  background: var(--bg-card);
+  border: 2px solid var(--border-mid);
+  padding: 36px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Featured card — dark navy */
+.cardFeatured {
+  background: var(--navy);
+  border-color: var(--navy);
+}
+
+/* ── Card top section ── */
+.cardTop {
+  margin-bottom: 24px;
+}
+
+.tier {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin-bottom: 16px;
+}
+
+.card:not(.cardFeatured) .tier {
+  color: var(--navy-muted);
+}
+
+.cardFeatured .tier {
+  color: rgba(252, 239, 217, 0.45);
+}
+
+.price {
+  font-size: clamp(36px, 4vw, 52px);
+  font-weight: 900;
+  letter-spacing: -2px;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.card:not(.cardFeatured) .price {
+  color: var(--navy);
+}
+
+.cardFeatured .price {
+  color: #FCEFD9;
+}
+
+.cadence {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.card:not(.cardFeatured) .cadence {
+  color: var(--navy-muted);
+}
+
+.cardFeatured .cadence {
+  color: rgba(252, 239, 217, 0.45);
+}
+
+/* ── Divider ── */
+.divider {
+  height: 1px;
+  margin-bottom: 28px;
+}
+
+.card:not(.cardFeatured) .divider {
+  background: var(--border-mid);
+}
+
+.cardFeatured .divider {
+  background: rgba(252, 239, 217, 0.12);
+}
+
+/* ── Features list ── */
+.features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  margin-bottom: 32px;
+  flex: 1;
+}
+
+.feature {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.check {
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+  line-height: 1.6;
+}
+
+.card:not(.cardFeatured) .check {
+  color: var(--navy);
+}
+
+.cardFeatured .check {
+  color: #FCEFD9;
+}
+
+.checkNa {
+  opacity: 0.35;
+}
+
+.featureText {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.55;
+}
+
+.card:not(.cardFeatured) .featureText {
+  color: var(--navy-muted);
+}
+
+.cardFeatured .featureText {
+  color: rgba(252, 239, 217, 0.65);
+}
+
+.featureNa {
+  opacity: 0.4;
+}
+
+/* ── CTA ── */
+.cta {
+  width: 100%;
+  text-align: center;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

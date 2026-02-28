@@ -1,0 +1,34 @@
+.section {
+  padding: var(--section-pad) 0;
+  position: relative;
+}
+
+/* ── Light theme — warm amber ── */
+.light {
+  background: var(--bg);
+
+  /* Override semantic tokens for light context */
+  --fg:        var(--navy);
+  --fg-muted:  var(--navy-muted);
+  --fg-dim:    var(--navy-dim);
+  --fg-faint:  var(--navy-faint);
+  --rule:      var(--border);
+  --rule-mid:  var(--border-mid);
+  --surface:   var(--bg-card);
+  --surface-2: var(--bg-card2);
+}
+
+/* ── Dark theme — navy inversion ── */
+.dark {
+  background: var(--navy);
+
+  /* Override semantic tokens for dark context */
+  --fg:        #FCEFD9;
+  --fg-muted:  rgba(252, 239, 217, 0.55);
+  --fg-dim:    rgba(252, 239, 217, 0.35);
+  --fg-faint:  rgba(252, 239, 217, 0.10);
+  --rule:      rgba(252, 239, 217, 0.08);
+  --rule-mid:  rgba(252, 239, 217, 0.16);
+  --surface:   rgba(252, 239, 217, 0.05);
+  --surface-2: rgba(252, 239, 217, 0.09);
+}

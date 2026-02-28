@@ -1,0 +1,28 @@
+/**
+ * leaps.to Design System — CSS Token Reference
+ * Source of truth for all design decisions.
+ * Do not add values here that are not in the design spec.
+ */
+
+:root {
+  /* ── Backgrounds ──────────────────────────────── */
+  --bg:          #FCEFD9;   /* Primary warm amber — dominant surface (~80%) */
+  --bg-card:     #F0DFC0;   /* Card background, light-mode panels            */
+  --bg-card2:    #E8D0AA;   /* Deep card — pressed state, deeper contrast    */
+
+  /* ── Navy palette ─────────────────────────────── */
+  --navy:        #002F6C;   /* Primary brand — text, borders, icons          */
+  --navy-mid:    #1A4A8A;   /* Secondary emphasis                            */
+  --navy-muted:  rgba(0, 47, 108, 0.55);  /* Body text, labels               */
+  --navy-dim:    rgba(0, 47, 108, 0.35);  /* Captions, slide numbers          */
+  --navy-faint:  rgba(0, 47, 108, 0.12);  /* Nav dots inactive, ghost fills   */
+  --navy-ghost:  #E8F0F8;   /* Hover backgrounds — very rare use             */
+
+  /* ── Borders ──────────────────────────────────── */
+  --border:      rgba(0, 47, 108, 0.14);  /* Standard 1.5px border            */
+  --border-mid:  rgba(0, 47, 108, 0.24);  /* Mid-weight 2.5px border          */
+
+  /* ── Motion ───────────────────────────────────── */
+  --transition-base:   200ms ease;
+  --transition-reveal: 500ms ease;
+}

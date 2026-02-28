@@ -1,0 +1,77 @@
+/* ============================================================
+   LEAPS DESIGN SYSTEM — Token Layer v2.0
+   Single source of truth for all visual decisions.
+   ============================================================ */
+
+:root {
+  /* ─── Core Palette ─── */
+  --bg:          #FCEFD9;   /* warm amber — primary surface */
+  --bg-card:     #F0DFC0;   /* card surface */
+  --bg-card2:    #E8D0AA;   /* deep card */
+  --navy:        #002F6C;   /* brand / primary text */
+  --navy-mid:    #1A4A8A;
+  --navy-muted:  rgba(0, 47, 108, 0.55);
+  --navy-dim:    rgba(0, 47, 108, 0.35);
+  --navy-faint:  rgba(0, 47, 108, 0.10);
+  --border:      rgba(0, 47, 108, 0.12);
+  --border-mid:  rgba(0, 47, 108, 0.22);
+
+  /* ─── Section-Scoped Semantic Tokens ─── */
+  /* These are overridden by [data-theme="dark"] sections.   */
+  /* All components reference these — never the raw palette. */
+  --fg:          var(--navy);
+  --fg-muted:    var(--navy-muted);
+  --fg-dim:      var(--navy-dim);
+  --fg-faint:    var(--navy-faint);
+  --rule:        var(--border);
+  --rule-mid:    var(--border-mid);
+  --surface:     var(--bg-card);
+  --surface-2:   var(--bg-card2);
+
+  /* ─── Typography Scale ─── */
+  --font:        'Montserrat', sans-serif;
+
+  /* Display — Hero headline */
+  --display:     clamp(56px, 8vw, 104px);
+  /* H1 — section headlines */
+  --h1:          clamp(42px, 5.5vw, 76px);
+  /* H2 — sub-headlines */
+  --h2:          clamp(28px, 3vw, 44px);
+  /* H3 — system names */
+  --h3:          clamp(18px, 1.8vw, 24px);
+  /* Body large */
+  --body-lg:     clamp(16px, 1.5vw, 20px);
+  /* Body */
+  --body:        clamp(13px, 1.1vw, 15px);
+  /* Label */
+  --label:       11px;
+
+  /* ─── Spacing ─── */
+  --space-2:     4px;
+  --space-4:     8px;
+  --space-6:     12px;
+  --space-8:     16px;
+  --space-12:    24px;
+  --space-16:    32px;
+  --space-20:    40px;
+  --space-24:    48px;
+  --space-32:    64px;
+  --space-40:    80px;
+  --space-48:    96px;
+  --space-64:    128px;
+
+  /* ─── Layout ─── */
+  --max-width:   1280px;
+  --gutter:      clamp(20px, 6vw, 88px);
+  --section-pad: clamp(80px, 10vw, 140px);
+
+  /* ─── Easing ─── */
+  --ease:        cubic-bezier(0.25, 0.1, 0.25, 1);
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ─── Motion Duration ─── */
+  --dur-fast:    200ms;
+  --dur-base:    450ms;
+  --dur-slow:    700ms;
+}

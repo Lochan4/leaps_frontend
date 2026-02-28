@@ -1,0 +1,97 @@
+.inner {
+  text-align: left;
+}
+
+.headline {
+  font-size: var(--display);
+  font-weight: 900;
+  color: var(--fg);
+  letter-spacing: -3px;
+  line-height: 0.95;
+  margin-bottom: 28px;
+}
+
+.subline {
+  font-size: var(--body-lg);
+  font-weight: 400;
+  color: var(--fg-muted);
+  line-height: 1.65;
+  margin-bottom: 48px;
+  max-width: 460px;
+}
+
+/* ── Form — compound input ── */
+.form {
+  display: flex;
+  max-width: 480px;
+  min-height: 54px;
+}
+
+.input {
+  flex: 1;
+  background: var(--surface);
+  border: 1.5px solid var(--rule-mid);
+  border-right: none;
+  color: var(--fg);
+  font-size: 14px;
+  font-weight: 400;
+  padding: 0 20px;
+  outline: none;
+  transition: border-color var(--dur-fast) var(--ease);
+}
+
+.input::placeholder {
+  color: var(--fg-dim);
+}
+
+.input:focus {
+  border-color: var(--fg-muted);
+}
+
+.btn {
+  background: #FCEFD9;
+  color: var(--navy);
+  font-family: var(--font);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  padding: 0 28px;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity var(--dur-fast) var(--ease);
+  flex-shrink: 0;
+}
+
+.btn:hover {
+  opacity: 0.85;
+}
+
+/* ── Confirmation state ── */
+.confirmation {
+  font-size: var(--body-lg);
+  font-weight: 600;
+  color: var(--fg-muted);
+  padding: 16px 0;
+  font-style: italic;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .headline {
+    letter-spacing: -2px;
+  }
+  .form {
+    flex-direction: column;
+    max-width: 100%;
+  }
+  .input {
+    border-right: 1.5px solid var(--rule-mid);
+    border-bottom: none;
+    padding: 16px 20px;
+  }
+  .btn {
+    padding: 16px 28px;
+  }
+}
