@@ -1,23 +1,29 @@
-Last updated: 2026-06-10 20:52
+Last updated: 2026-06-10 20:53
 
 # Project Brief
 
-Claude Code is an AI-assisted code editor that lets users write, debug, and refactor software through natural conversation. It bridges the gap between intent and implementation by understanding code context and user requests, then generating or modifying code directly in the editor. The core problem it solves: developers spend significant time translating ideas into working code; Claude Code compresses that loop.
+This is a conversational AI assistant that maintains session state across commands. Users interact via slash commands (/clear, /resume, /history) to manage conversation context and retrieve past interactions. The product solves the problem of stateless chat by persisting session data locally, allowing users to pick up where they left off.
 
 ## What's In Flight
 
-- Session persistence and resumption: `/resume` command to list and reopen past conversations; `/history` command for in-session transcript access
-- Local session file storage and retrieval (implementation in progress)
-- Multi-turn conversation context management to maintain code state across requests
+- Testing /resume and /history commands to verify they correctly retrieve and restore session state
+- Documenting local session file storage location and format for developer reference
+- No active implementation or debugging work; system is in a stable, awaiting-instruction state
 
 ## Key Decisions Made
 
-- Stateless API design with session files as the source of truth for conversation history. Reason: enables offline access and reduces server dependency.
-- Command-driven interface (`/resume`, `/history`, etc.) rather than UI-only navigation. Reason: faster for power users, easier to script and extend.
-- Claude as the inference engine. Reason: strong code understanding and generation; API stability.
-- Local-first storage with optional cloud sync planned. Reason: privacy-first approach, works without network.
+- Session state is persisted locally in files rather than a remote database (simplifies deployment, keeps data on user's machine)
+- Slash command interface (/clear, /resume, /history) chosen for explicit session control (clear intent, easy to test)
+- Append-only decision log in decisions.md to maintain audit trail of architectural choices and reasoning
 
 ## Open Goals
 
-- Complete session file storage implementation and test resumption flow end-to-end
-- Add session metadata (timestamp, file list, summary) for better discoverability
+- Verify /resume command restores conversation context correctly
+- Verify /history command returns session data in expected format
+- Document session file storage location, schema, and format in architecture.md for future maintainers
+- Establish baseline test coverage for all three session commands
+
+## How to Get Started
+
+1. Read architecture.md to understand service boundaries and the session persistence layer
+2. Locate
