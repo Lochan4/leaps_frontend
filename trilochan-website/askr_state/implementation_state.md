@@ -9,6 +9,9 @@ Last active: 2026-06-10 18:04
 
 ### In Progress
 
+- [20:55] Ran: which askr 2>/dev/null || echo "not in PATH"
+- [20:54] Ran: ls /Users/saitrilochan/Documents/trilochan-website/askr_state/
+- [20:54] Ran: ls /Users/saitrilochan/Documents/trilochan-website/
 [Nothing in progress]
 
 ### Completed

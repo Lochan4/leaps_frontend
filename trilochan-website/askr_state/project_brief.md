@@ -1,29 +1,29 @@
-Last updated: 2026-06-10 20:53
+Last updated: 2026-06-10 20:58
 
 # Project Brief
 
-This is a conversational AI assistant that maintains session state across commands. Users interact via slash commands (/clear, /resume, /history) to manage conversation context and retrieve past interactions. The product solves the problem of stateless chat by persisting session data locally, allowing users to pick up where they left off.
+askr is a CLI tool that manages conversational session history and state, allowing users to resume previous conversations and review interaction logs. It solves the problem of losing context across terminal sessions by persisting structured session data locally.
 
 ## What's In Flight
 
-- Testing /resume and /history commands to verify they correctly retrieve and restore session state
-- Documenting local session file storage location and format for developer reference
-- No active implementation or debugging work; system is in a stable, awaiting-instruction state
+- Testing /resume and /history commands to verify core functionality works as expected
+- Documenting session file storage architecture, including location, format, and structure
+- Validating that session state persists correctly across CLI invocations
 
 ## Key Decisions Made
 
-- Session state is persisted locally in files rather than a remote database (simplifies deployment, keeps data on user's machine)
-- Slash command interface (/clear, /resume, /history) chosen for explicit session control (clear intent, easy to test)
-- Append-only decision log in decisions.md to maintain audit trail of architectural choices and reasoning
+- Session files stored locally in askr_state/ directory with structured format rather than cloud-based storage. Reason: user privacy and offline-first operation.
+- CLI commands use /resume and /history syntax for consistency with common shell patterns.
+- Architecture documentation lives in askr_state/architecture.md to keep system design close to implementation.
 
 ## Open Goals
 
-- Verify /resume command restores conversation context correctly
-- Verify /history command returns session data in expected format
-- Document session file storage location, schema, and format in architecture.md for future maintainers
-- Establish baseline test coverage for all three session commands
+- Execute askr history command and verify output format matches expected session log structure
+- Execute askr resume command and confirm previous conversation context loads correctly
+- Document session file storage location, naming convention, and JSON/text format for developer reference
+- Resolve write permissions on askr_state/architecture.md to enable documentation updates
 
 ## How to Get Started
 
-1. Read architecture.md to understand service boundaries and the session persistence layer
-2. Locate
+1. Locate the askr CLI at /Users/saitrilochan/bin/askr and verify it's executable.
+2. Review existing session files in /
