@@ -1,30 +1,24 @@
-Last updated: 2026-06-12 17:45
+Last updated: 2026-06-12 17:46
 
 # Project Brief
 
-askr is a Python CLI tool that manages conversation history and session state for AI interactions. It allows users to resume previous conversations, view interaction history, and maintain persistent session context across invocations.
+askr is a CLI tool that integrates Claude AI into shell workflows, enabling users to execute natural language commands, manage conversation sessions, and maintain persistent permissions for file operations. It solves the friction of context-switching between terminal and AI interfaces by bringing AI capabilities directly into the command line.
 
 ## What's In Flight
 
-- Testing and documenting `askr history` command output format and behavior
-- Testing and documenting `askr resume` command behavior and session restoration mechanics
-- Updating askr_state blockers file with findings from command execution
-- Permission model refinement: current implementation requires user approval for bash command execution and file writes
+- Persistent permissions configuration: completing write of ~/.claude/settings.json with rules-based permission system (destructive operations ask for confirmation, read operations allowed without prompt)
+- Session restoration and `askr resume` command behavior: documenting how sessions persist and are restored across invocations
+- Permission rules engine: first-match-wins evaluation of tool access (rm operations prioritized first, then read allows)
 
 ## Key Decisions Made
 
-- CLI implemented in Python with subcommand architecture (history, resume, etc.)
-- State management uses file-based storage at /Users/saitrilochan/Documents/trilochan-website/askr_state/
-- Permission-gated execution model: bash commands and file operations require explicit user approval before execution
-- Script location: /Users/saitrilochan/bin/askr
+- Permissions stored in ~/.claude/settings.json as rules array rather than flags: eliminates need for --dangerously-skip-permissions on every invocation
+- Destructive operations (rm) placed first in rules array: ensures confirmation prompts take precedence over blanket allows
+- Session-based architecture: conversations persist and can be resumed, maintaining context across CLI calls
+- Claude Code integration: tool access controlled through explicit permission rules, not blanket allow/deny
 
 ## Open Goals
 
-- Execute `askr history` command and document output format, filtering options, and display behavior
-- Execute `askr resume` command and document session restoration behavior, state loading, and context preservation
-- Complete findings documentation in askr_state/blockers.md with command behavior specifications
-- Resolve permission constraints blocking test execution and documentation writes
-
-## How to Get Started
-
-1. Review the current
+- Complete and verify ~/.claude/settings.json write with properly formatted permissions rules
+- Test that read operations execute without prompting and rm operations trigger confirmation
+-
