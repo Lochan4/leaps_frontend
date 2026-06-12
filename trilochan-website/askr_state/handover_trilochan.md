@@ -1,27 +1,23 @@
 # Handover: trilochan
 
-Last updated: 2026-06-12 19:51
+Last updated: 2026-06-12 20:02
 
-# Handover Document
+# HANDOVER DOCUMENT
 
 ## Task
-Create a Git branch, push code to remote, and prepare the project structure for Vercel hosting.
+Set up a dedicated git repository for the trilochan-website project and initialize a feature branch for v2 redesign, resolving permission issues with the current monorepo structure.
 
 ## Status
-- User requested plan before implementation
-- Session ended with user asking for a plan/approach outline
-- No branch created yet
-- No code pushed yet
-- Project location: /Users/saitrilochan/Documents/trilochan-website/
-- Project structure not yet reviewed for Vercel compatibility
-- ~/.claude/settings.json was configured with permission rules (rm and git operations require confirmation; Read/Write broadly allowed)
+- Project files located at `/Users/saitrilochan/Documents/trilochan-website/`
+- Current state: untracked files within a parent monorepo at `/Users/saitrilochan/Documents/`
+- Git permission rules are blocking remote and branch queries on the parent repo
+- Decision made: initialize fresh git repo in `trilochan-website/` directory as dedicated repo (not monorepo subdirectory)
+- Branch `feat/v2-redesign` needs to be created and checked out
+- Two user questions were asked at session end but remain unanswered
 
 ## Failed Approaches
-None.
+- Attempting to query git remote and branch info on parent monorepo — blocked by permission rules
+- Keeping website as untracked subdirectory within parent monorepo — decided against; dedicated repo is cleaner for Vercel deployment
 
 ## Next Action
-Provide a detailed plan to the user outlining: (1) what the current project structure is (run `ls -la` and `find` to inspect /Users/saitrilochan/Documents/trilochan-website/), (2) what changes are needed to make it Vercel-compatible (check for vercel.json, package.json, build configuration), (3) the Git workflow (create branch name, commit message strategy, push to remote), and (4) any Vercel-specific requirements based on the detected framework/stack. Wait for user approval before executing.
-
-## Open Questions
-- What is the current tech stack of trilochan-website (Next.js, React, static site, etc.)?
-- What is
+Execute `git init` in `/Users/saitrilochan/Documents/trilochan-website/` directory, then run `git checkout -b feat/v2-redesign` to create and switch to the feature branch. After completion, await
