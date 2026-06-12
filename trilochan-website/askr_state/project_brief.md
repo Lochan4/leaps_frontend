@@ -1,27 +1,25 @@
-Last updated: 2026-06-12 20:12
+Last updated: 2026-06-12 20:25
 
 # Project Brief
 
-Askr is a command-line tool for managing AI-assisted workflows and session state. It enables users to execute commands, restore previous sessions, and maintain context across interactions. The product solves the problem of fragmented AI tool usage by providing a unified interface for session management and command execution.
+Trilochan-website is a personal portfolio and resume site for Saitrilochan. The product serves as a central hub to showcase work, skills, and professional information. Currently in early v2 redesign phase to modernize the visual design and user experience.
 
 ## What's In Flight
 
-- Documenting and executing `askr resume` command behavior, including session restoration logic and state persistence
-- Trilochan website redesign: initializing dedicated Git repository and `feat/v2-redesign` branch in `/Users/saitrilochan/Documents/trilochan-website/`
-- Session state management infrastructure to support resuming prior work contexts
+- V2 redesign implementation: visual and functional updates to index.html, style.css, and script.js
+- Git repository initialization and feat/v2-redesign branch creation pending user approval
+- Design specification review: need to locate and read v2 design brief to understand exact requirements
+- Session restoration and askr resume command behavior: documentation and implementation in progress
 
 ## Key Decisions Made
 
-- Dedicated Git repository for trilochan-website instead of monorepo configuration — allows independent versioning and deployment of the website redesign
-- Append-only decision log format — maintains audit trail of reasoning without revision history noise
-- Command-driven architecture for askr — CLI-first interface enables scripting and integration with other tools
+- Monolithic single-page structure: keeping index.html, style.css, script.js as core files rather than splitting into component architecture
+- Feature branch workflow: using feat/v2-redesign branch to isolate redesign work from main
+- Local development: working directly in /Users/saitrilochan/Documents/trilochan-website/
+- Autonomous approval model: user has approved autonomous work on redesign tasks; git operations still require explicit user sign-off
 
 ## Open Goals
 
-- Execute and document `askr resume` command behavior and session restoration
-- Complete `feat/v2-redesign` branch setup and begin website redesign implementation
-- Define session state schema and persistence layer for askr
-
-## How to Get Started
-
-1. Review architecture.md and decisions.md to understand system boundaries and
+- Obtain user approval and execute git init in project directory
+- Create and switch to feat/v2-redesign branch
+- Locate v2 design specification document
