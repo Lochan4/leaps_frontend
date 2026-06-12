@@ -1,22 +1,27 @@
-Last updated: 2026-06-12 20:02
+Last updated: 2026-06-12 20:12
 
 # Project Brief
 
-Askr is a command-line resume assistant that helps users build, manage, and deploy resume content through an interactive CLI. It stores resume data locally, supports session restoration, and integrates with deployment platforms. The core problem it solves: making resume creation and iteration fast and scriptable for developers who prefer the terminal.
+Askr is a command-line tool for managing AI-assisted workflows and session state. It enables users to execute commands, restore previous sessions, and maintain context across interactions. The product solves the problem of fragmented AI tool usage by providing a unified interface for session management and command execution.
 
 ## What's In Flight
 
-- Resume command execution and session restoration: documenting and testing the `askr resume` command behavior, including how sessions persist and restore state across invocations.
-- Trilochan website v2 redesign: initializing dedicated git repository and feature branch structure to unblock Vercel deployment and separate website from parent monorepo.
+- Documenting and executing `askr resume` command behavior, including session restoration logic and state persistence
+- Trilochan website redesign: initializing dedicated Git repository and `feat/v2-redesign` branch in `/Users/saitrilochan/Documents/trilochan-website/`
+- Session state management infrastructure to support resuming prior work contexts
 
 ## Key Decisions Made
 
-- Dedicated git repository for trilochan-website instead of monorepo subdirectory: cleaner separation for Vercel deployment and independent version control.
-- Local-first data storage with session restoration: resume state persists between CLI invocations, enabling long-running workflows without re-entry friction.
-- CLI-first interaction model: terminal-native interface prioritizes developer ergonomics over GUI.
+- Dedicated Git repository for trilochan-website instead of monorepo configuration — allows independent versioning and deployment of the website redesign
+- Append-only decision log format — maintains audit trail of reasoning without revision history noise
+- Command-driven architecture for askr — CLI-first interface enables scripting and integration with other tools
 
 ## Open Goals
 
-- Complete and document `askr resume` command behavior and session restoration mechanics.
-- Execute git initialization in trilochan-website directory and create `feat/v2-redesign` branch.
-- Resolve two unanswered user questions from previous
+- Execute and document `askr resume` command behavior and session restoration
+- Complete `feat/v2-redesign` branch setup and begin website redesign implementation
+- Define session state schema and persistence layer for askr
+
+## How to Get Started
+
+1. Review architecture.md and decisions.md to understand system boundaries and
