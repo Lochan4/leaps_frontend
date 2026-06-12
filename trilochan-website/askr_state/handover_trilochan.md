@@ -1,24 +1,27 @@
 # Handover: trilochan
 
-Last updated: 2026-06-12 19:48
+Last updated: 2026-06-12 19:51
 
 # Handover Document
 
 ## Task
-Document the `askr resume`/session restoration mechanism and write architecture documentation for the askr codebase.
+Create a Git branch, push code to remote, and prepare the project structure for Vercel hosting.
 
 ## Status
-- Explored askr codebase at `/Users/saitrilochan/Documents/askr/`
-- Examined git history: commits 9e6424f and a404549 reviewed
-- Located session state files in `~/.claude/sessions/`
-- Located settings file at `~/.claude/settings.json`
-- Identified that handover files in the askr repo ARE the session persistence system
-- Started editing `/Users/saitrilochan/Documents/trilochan-website/askr_state/architecture.md` but did not complete it
-- Discovered a permission blocker: the session was launched without permissions needed for autonomous work, and the task to fix permissions (writing to `~/.claude/settings.json`) is itself blocked by those missing permissions
+- User requested plan before implementation
+- Session ended with user asking for a plan/approach outline
+- No branch created yet
+- No code pushed yet
+- Project location: /Users/saitrilochan/Documents/trilochan-website/
+- Project structure not yet reviewed for Vercel compatibility
+- ~/.claude/settings.json was configured with permission rules (rm and git operations require confirmation; Read/Write broadly allowed)
 
 ## Failed Approaches
-- Attempted to document session restoration mechanism by running `askr help` and exploring live system — this approach was abandoned when the permission blocker was discovered
-- Attempted to write architecture documentation to `architecture.md` — blocked by lack of write permissions to settings file needed to enable autonomous work
+None.
 
 ## Next Action
-Resolve the permission blocker by obtaining or configuring the necessary permissions to write to `~/.claude
+Provide a detailed plan to the user outlining: (1) what the current project structure is (run `ls -la` and `find` to inspect /Users/saitrilochan/Documents/trilochan-website/), (2) what changes are needed to make it Vercel-compatible (check for vercel.json, package.json, build configuration), (3) the Git workflow (create branch name, commit message strategy, push to remote), and (4) any Vercel-specific requirements based on the detected framework/stack. Wait for user approval before executing.
+
+## Open Questions
+- What is the current tech stack of trilochan-website (Next.js, React, static site, etc.)?
+- What is

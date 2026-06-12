@@ -1,29 +1,22 @@
-Last updated: 2026-06-12 19:48
+Last updated: 2026-06-12 19:51
 
 # Project Brief
 
-askr is a command-line interface for Claude that manages multi-turn conversations with persistent session state. It stores conversation history, settings, and session metadata locally to enable resumable workflows without re-authenticating or losing context between invocations.
+Askr is a command-line tool for managing AI-assisted resume workflows. It enables users to execute resume operations, restore previous sessions, and maintain conversation state across invocations. The product solves the problem of fragmented resume iteration by providing a persistent, command-driven interface to AI assistance.
 
 ## What's In Flight
 
-- Document the `askr resume` command behavior and session restoration mechanism
-- Write complete architecture documentation for the askr codebase
-- Resolve permission configuration blocker preventing autonomous documentation work
+- Resume command execution and session restoration: documenting and implementing the `askr resume` command behavior, including how sessions persist and restore across CLI invocations.
+- Vercel hosting preparation for trilochan-website: inspecting project structure, identifying Vercel compatibility requirements, and planning Git workflow for deployment.
 
 ## Key Decisions Made
 
-- Session state persists in `~/.claude/sessions/` as handover files (git history: commits 9e6424f, a404549)
-- User settings stored in `~/.claude/settings.json` with permission controls
-- Handover files in the askr repo serve as the session persistence system
-- Architecture documentation target: `/Users/saitrilochan/Documents/trilochan-website/askr_state/architecture.md`
+- Session state is persisted to disk to enable resumption across CLI calls; this avoids re-prompting users and maintains conversation continuity.
+- CLI uses a command-driven architecture (e.g., `askr resume`, `askr [command]`) rather than interactive REPL, allowing scripting and clear intent signaling.
+- Configuration is stored in ~/.claude/settings.json with permission rules for sensitive operations (rm, git require confirmation).
 
 ## Open Goals
 
-- Complete architecture.md with session restoration mechanism documented
-- Resolve write permissions to `~/.claude/settings.json` to unblock autonomous work
-- Execute and test `askr resume` command end-to-end
-- Document session state lifecycle (creation, update, restoration, cleanup)
-
-## How to Get Started
-
-1. Clone or navigate to `/Users/saitrilochan/Documents/ask
+- Document exact behavior of `askr resume` command: what triggers session restoration, how state is loaded, error handling for missing or corrupted sessions.
+- Implement and test session restoration logic end-to-end.
+- Complete Vercel
