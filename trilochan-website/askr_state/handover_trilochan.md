@@ -1,27 +1,12 @@
 # Handover: trilochan
 
-Last updated: 2026-06-12 17:57
+Last updated: 2026-06-12 19:45
 
-# HANDOVER DOCUMENT
+# Handover Document
 
 ## Task
-Merge permissions rules into `~/.claude/settings.json` without overwriting existing configuration.
+Add contact footer section with LinkedIn/GitHub/Gmail buttons, make it full-viewport height, equalize button styling intensity, reorder portfolio cards, and add Leaps company card with full narrative.
 
 ## Status
-- `~/.claude/settings.json` exists but is inaccessible to agents in the sandbox
-- All attempted read methods failed: direct Read tool, Agent skill, Bash command
-- File contents are unknown — sandbox blocks access from all agent types
-- No merge operation has been performed yet
-
-## Failed Approaches
-- Direct Read tool access to `~/.claude/settings.json` — sandbox blocked
-- Agent skill wrapper around read — sandbox blocked
-- Bash cat command via Bash skill — sandbox blocked
-- All approaches confirmed sandbox enforces file access restrictions
-
-## Next Action
-Obtain the current contents of `~/.claude/settings.json` from the user by requesting they run `cat ~/.claude/settings.json` in their terminal and paste the output. Once contents are provided, parse the JSON and merge in the required permissions rules without overwriting existing keys.
-
-## Open Questions
-- What are the current contents of `~/.claude/settings.json`?
-- What specific permissions rules need to be merged in?
+- `/Users/saitrilochan/Documents/trilochan-website/index.html` — Footer section added with three buttons (LinkedIn, GitHub, Email me). Portfolio cards array reordered to: Leaps → Heuretos → Founding Engineer → 8bit.ai → Neutrino → Research. Leaps card content includes full narrative: "Stop applying. Start interviewing." with description of one-time setup, real-time job scanning, Leaps Score, resume rewrite, auto-apply. Card structure wrapped in `.card-face` with URL data attributes for click handlers.
+- `/Users/saitrilochan/Documents/trilochan-website/style.css` — Footer styled with `height: 100vh` for full viewport. All three footer buttons (`.footer-btn`) set to equal intensity with consistent background, border, and hover states. Removed `.footer-btn--email` class override that was causing unequal highlighting. Added `.card:hover` and `.card:active` styles for card interaction feedback. `.cards-rail` uses `align-items: stretch` for uniform
