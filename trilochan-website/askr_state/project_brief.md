@@ -1,25 +1,20 @@
-Last updated: 2026-06-12 20:25
+Last updated: 2026-06-12 20:28
 
 # Project Brief
 
-Trilochan-website is a personal portfolio and resume site for Saitrilochan. The product serves as a central hub to showcase work, skills, and professional information. Currently in early v2 redesign phase to modernize the visual design and user experience.
+Askr is a personal portfolio and resume platform that generates dynamic, narrative-driven project showcases. It allows users to build a polished web presence by composing project stories, managing contact information, and exporting resume data—all through a command-line interface that orchestrates content generation and session state.
 
 ## What's In Flight
 
-- V2 redesign implementation: visual and functional updates to index.html, style.css, and script.js
-- Git repository initialization and feat/v2-redesign branch creation pending user approval
-- Design specification review: need to locate and read v2 design brief to understand exact requirements
-- Session restoration and askr resume command behavior: documentation and implementation in progress
+- Contact footer implementation: LinkedIn, GitHub, and Email buttons added to portfolio with equal styling. Email uses mailto: links; social buttons need actual profile URLs inserted.
+- Project card reordering and horizontal scroll: Six projects now displayed (Leaps, Heuretos, Founding Engineer, 8bit.ai, Neutrino, Research) with Leaps card populated with full narrative.
+- Resume command behavior: `askr resume` execution and session restoration logic needs documentation and testing.
 
 ## Key Decisions Made
 
-- Monolithic single-page structure: keeping index.html, style.css, script.js as core files rather than splitting into component architecture
-- Feature branch workflow: using feat/v2-redesign branch to isolate redesign work from main
-- Local development: working directly in /Users/saitrilochan/Documents/trilochan-website/
-- Autonomous approval model: user has approved autonomous work on redesign tasks; git operations still require explicit user sign-off
+- Footer buttons use equal visual intensity across all three (email, LinkedIn, GitHub) rather than highlighting email as primary.
+- Project cards render in horizontal scroll with click handlers that open URLs from data attributes or trigger mailto: for email.
+- Content array in script.js drives card rendering; project order is now: Leaps, Heuretos, Founding Engineer, 8bit.ai, Neutrino, Research.
+- Email footer uses mailto: with pre-filled recipient; social links open in new tabs.
 
-## Open Goals
-
-- Obtain user approval and execute git init in project directory
-- Create and switch to feat/v2-redesign branch
-- Locate v2 design specification document
+##
