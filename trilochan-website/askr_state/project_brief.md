@@ -1,27 +1,29 @@
-Last updated: 2026-06-12 19:46
+Last updated: 2026-06-12 19:48
 
 # Project Brief
 
-Trilochan's personal portfolio and professional presence website. The product showcases work experience, projects, and contact information in a modern, interactive card-based layout. It serves as a landing page for professional opportunities and networking.
+askr is a command-line interface for Claude that manages multi-turn conversations with persistent session state. It stores conversation history, settings, and session metadata locally to enable resumable workflows without re-authenticating or losing context between invocations.
 
 ## What's In Flight
 
-- Contact footer section with LinkedIn, GitHub, and email buttons styled for full viewport height
-- Portfolio card reordering: Leaps (featured first) followed by Heuretos, Founding Engineer, 8bit.ai, Neutrino, Research
-- Leaps company card with full narrative: "Stop applying. Start interviewing." including one-time setup, real-time job scanning, Leaps Score, resume rewrite, and auto-apply features
-- Button styling equalization across footer to remove visual intensity inconsistencies
-- Card interaction feedback (hover and active states)
+- Document the `askr resume` command behavior and session restoration mechanism
+- Write complete architecture documentation for the askr codebase
+- Resolve permission configuration blocker preventing autonomous documentation work
 
 ## Key Decisions Made
 
-- Card-based layout with horizontal rail scrolling for portfolio presentation
-- Footer occupies full viewport height for prominent contact access
-- Leaps positioned as primary portfolio item due to strategic importance
-- Consistent button styling across all interactive elements to reduce cognitive load
-- Data attributes on card elements for click handler routing rather than inline onclick handlers
+- Session state persists in `~/.claude/sessions/` as handover files (git history: commits 9e6424f, a404549)
+- User settings stored in `~/.claude/settings.json` with permission controls
+- Handover files in the askr repo serve as the session persistence system
+- Architecture documentation target: `/Users/saitrilochan/Documents/trilochan-website/askr_state/architecture.md`
 
 ## Open Goals
 
-- Document askr resume command behavior and session restoration logic
-- Verify footer button click handlers route correctly to external URLs
-- Test card rail responsiveness on mobile viewports
+- Complete architecture.md with session restoration mechanism documented
+- Resolve write permissions to `~/.claude/settings.json` to unblock autonomous work
+- Execute and test `askr resume` command end-to-end
+- Document session state lifecycle (creation, update, restoration, cleanup)
+
+## How to Get Started
+
+1. Clone or navigate to `/Users/saitrilochan/Documents/ask
