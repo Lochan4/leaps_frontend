@@ -1,0 +1,21 @@
+{
+  "name": "laptop-server",
+  "version": "1.0.0",
+  "description": "Turn your laptop into a remote server with Claude Code + ngrok",
+  "main": "server/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "setup": "bash scripts/setup.sh",
+    "tunnel": "bash scripts/tunnel.sh",
+    "all": "bash start.sh"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "dotenv": "^16.4.5",
+    "cors": "^2.8.5",
+    "multer": "^1.4.5-lts.1",
+    "express-rate-limit": "^7.4.1"
+  }
+}

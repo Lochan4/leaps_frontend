@@ -1,0 +1,13 @@
+version: "3"
+agent:
+  # Add your authtoken here or run: ngrok config add-authtoken <token>
+  # authtoken: YOUR_TOKEN_HERE
+
+tunnels:
+  api:
+    proto: http
+    addr: 3001
+    inspect: true
+  ssh:
+    proto: tcp
+    addr: 22
