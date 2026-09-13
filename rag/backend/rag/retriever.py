@@ -11,11 +11,15 @@ Cross-encoder is lazy-loaded on first search so startup is fast.
 
 from __future__ import annotations
 
+import logging
+
 import numpy as np
 from rank_bm25 import BM25Okapi
 from sentence_transformers import CrossEncoder, SentenceTransformer
 
 from .graph import Neo4jGraph
+
+logger = logging.getLogger(__name__)
 
 _reranker: CrossEncoder | None = None
 
@@ -23,6 +27,7 @@ _reranker: CrossEncoder | None = None
 def _get_reranker() -> CrossEncoder:
     global _reranker
     if _reranker is None:
+        logger.info("Loading cross-encoder reranker (first search)…")
         _reranker = CrossEncoder("cross-encoder/ms-marco-MiniLM-L6-v2")
     return _reranker
 

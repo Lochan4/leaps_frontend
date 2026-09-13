@@ -10,11 +10,12 @@ Ingest flow:
 
 Search flow:
   query → BM25 (sparse) + Neo4j vector (dense) + Neo4j graph traversal
-  → RRF fusion → cross-encoder rerank → Claude Opus answer generation
+  → RRF fusion → cross-encoder rerank → Claude Sonnet answer generation
 """
 
 from __future__ import annotations
 
+import logging
 import os
 
 import numpy as np
@@ -27,6 +28,8 @@ from .generator import generate_answer
 from .graph import Neo4jGraph
 from .relation_extractor import extract_triples
 from .retriever import hybrid_search
+
+logger = logging.getLogger(__name__)
 
 
 class RAGPipeline:
@@ -56,6 +59,7 @@ class RAGPipeline:
             self.bm25 = None
             self.chunk_ids = []
             self.chunk_cache = {}
+            logger.info("BM25 index cleared (no chunks in store)")
             return
 
         self.chunk_ids = [c["id"] for c in chunks]
@@ -63,16 +67,18 @@ class RAGPipeline:
 
         tokenized = [c["text"].lower().split() for c in chunks]
         self.bm25 = BM25Okapi(tokenized)
+        logger.info("BM25 rebuilt: %d chunks indexed", len(chunks))
 
     def _embed(self, texts: list[str]) -> np.ndarray:
         return self.embedder.encode(texts, normalize_embeddings=True, show_progress_bar=False)
 
     # ------------------------------------------------------------------
-    # Public API (matches existing main.py interface)
+    # Public API
     # ------------------------------------------------------------------
 
     def ingest(self, content: bytes, filename: str) -> dict:
         if self.graph.document_exists(filename):
+            logger.info("Skipping '%s' — already indexed", filename)
             return {
                 "filename": filename,
                 "pages": 0,
@@ -82,11 +88,13 @@ class RAGPipeline:
 
         # 1. Extract text + tables via PyMuPDF + pdfplumber
         extracted = extract_from_pdf(content, filename)
+        page_count = len(extracted["pages"])
 
         # 2. Chunk
         chunks = chunk_text(extracted["pages"], filename)
         if not chunks:
-            return {"filename": filename, "pages": len(extracted["pages"]), "chunks": 0}
+            logger.warning("'%s': no chunks produced from %d pages", filename, page_count)
+            return {"filename": filename, "pages": page_count, "chunks": 0}
 
         # 3. Embed all chunk texts in one batch
         texts = [c["text"] for c in chunks]
@@ -109,11 +117,17 @@ class RAGPipeline:
         # 6. Rebuild BM25 from updated Neo4j state
         self._rebuild_bm25()
 
+        logger.info("Ingested '%s': %d pages, %d chunks", filename, page_count, len(chunks))
         return {
             "filename": filename,
-            "pages": len(extracted["pages"]),
+            "pages": page_count,
             "chunks": len(chunks),
         }
+
+    def delete(self, filename: str) -> None:
+        self.graph.delete_document(filename)
+        self._rebuild_bm25()
+        logger.info("Deleted '%s' and rebuilt BM25", filename)
 
     def search(self, query: str, top_k: int = 5) -> dict:
         if not self.chunk_ids or self.bm25 is None:
@@ -135,7 +149,7 @@ class RAGPipeline:
             "answer": answer,
             "sources": [
                 {
-                    "text": r["text"][:400],
+                    "text": r["text"][:400] + ("…" if len(r["text"]) > 400 else ""),
                     "source": r["source"],
                     "page": r["page"],
                     "score": round(float(r["score"]), 5),

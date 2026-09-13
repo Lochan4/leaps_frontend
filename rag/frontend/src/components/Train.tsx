@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { DocInfo, getDocuments, trainDocs } from '../api'
+import { DocInfo, deleteDocument, getDocuments, trainDocs } from '../api'
 
 export default function Train() {
   const [files, setFiles] = useState<File[]>([])
@@ -7,14 +7,25 @@ export default function Train() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [indexed, setIndexed] = useState<DocInfo[]>([])
-  const [lastResult, setLastResult] = useState<{ chunks: number } | null>(null)
+  const [docsLoading, setDocsLoading] = useState(true)
+  const [docsError, setDocsError] = useState<string | null>(null)
+  const [lastResult, setLastResult] = useState<{ chunks: number; skipped: string[] } | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  useEffect(() => {
-    getDocuments()
-      .then(r => setIndexed(r.documents))
-      .catch(() => {})
-  }, [])
+  const loadDocuments = async () => {
+    setDocsLoading(true)
+    setDocsError(null)
+    try {
+      const r = await getDocuments()
+      setIndexed(r.documents)
+    } catch {
+      setDocsError('Could not load indexed documents. Is the backend running?')
+    } finally {
+      setDocsLoading(false)
+    }
+  }
+
+  useEffect(() => { loadDocuments() }, [])
 
   const addFiles = (incoming: FileList | null) => {
     if (!incoming) return
@@ -40,13 +51,26 @@ export default function Train() {
     setError(null)
     try {
       const result = await trainDocs(files)
-      setIndexed(prev => [...prev, ...result.documents])
-      setLastResult({ chunks: result.total_chunks })
+      const skipped = result.documents
+        .filter(d => d.note)
+        .map(d => d.filename)
+      setLastResult({ chunks: result.total_chunks, skipped })
       setFiles([])
+      await loadDocuments()
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Upload failed')
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleDelete = async (filename: string) => {
+    setError(null)
+    try {
+      await deleteDocument(filename)
+      await loadDocuments()
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : 'Delete failed')
     }
   }
 
@@ -75,7 +99,7 @@ export default function Train() {
         />
         <div className="dropzone-icon">⬆</div>
         <p className="dropzone-label">Drop PDFs here or click to browse</p>
-        <p className="dropzone-hint">Only .pdf files are supported</p>
+        <p className="dropzone-hint">Only .pdf files — max 50 MB each</p>
       </div>
 
       {/* Selected files */}
@@ -99,36 +123,69 @@ export default function Train() {
       )}
 
       {error && <div className="alert alert--error">{error}</div>}
+
       {lastResult && (
         <div className="alert alert--success">
-          Indexed successfully — {lastResult.chunks} chunks added to the knowledge base.
+          {lastResult.chunks > 0
+            ? `Indexed successfully — ${lastResult.chunks} chunks added.`
+            : 'Upload complete.'}
+          {lastResult.skipped.length > 0 && (
+            <span className="alert-note">
+              {' '}Already indexed (skipped): {lastResult.skipped.join(', ')}
+            </span>
+          )}
         </div>
       )}
 
       {/* Indexed documents */}
-      {indexed.length > 0 && (
-        <div className="section">
-          <h3 className="section-title">Indexed Documents ({indexed.length})</h3>
+      <div className="section">
+        <h3 className="section-title">
+          Indexed Documents{!docsLoading && ` (${indexed.length})`}
+        </h3>
+
+        {docsLoading && (
+          <div className="loading-state">
+            <div className="spinner" />
+            <span>Loading documents…</span>
+          </div>
+        )}
+
+        {docsError && (
+          <div className="alert alert--error">
+            {docsError}
+            <button className="btn-retry" onClick={loadDocuments}>Retry</button>
+          </div>
+        )}
+
+        {!docsLoading && !docsError && indexed.length > 0 && (
           <div className="doc-table">
             <div className="doc-table-head">
               <span>Filename</span>
               <span>Pages</span>
               <span>Chunks</span>
+              <span></span>
             </div>
             {indexed.map((doc, i) => (
               <div key={i} className="doc-table-row">
                 <span className="doc-filename">{doc.filename}</span>
                 <span>{doc.pages}</span>
                 <span>{doc.chunks}</span>
+                <button
+                  className="btn-delete"
+                  title="Remove from index"
+                  onClick={() => handleDelete(doc.filename)}
+                >
+                  ✕
+                </button>
               </div>
             ))}
           </div>
-        </div>
-      )}
+        )}
 
-      {indexed.length === 0 && !loading && (
-        <div className="empty-state">No documents indexed yet. Upload PDFs above to get started.</div>
-      )}
+        {!docsLoading && !docsError && indexed.length === 0 && (
+          <div className="empty-state">No documents indexed yet. Upload PDFs above to get started.</div>
+        )}
+      </div>
     </div>
   )
 }

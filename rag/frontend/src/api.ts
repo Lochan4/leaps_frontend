@@ -2,6 +2,7 @@ export interface DocInfo {
   filename: string
   pages: number
   chunks: number
+  note?: string
 }
 
 export interface TrainResult {
@@ -38,6 +39,14 @@ export async function getDocuments(): Promise<{ documents: DocInfo[] }> {
   const res = await fetch('/train')
   if (!res.ok) throw new Error('Failed to fetch documents')
   return res.json()
+}
+
+export async function deleteDocument(filename: string): Promise<void> {
+  const res = await fetch(`/train/${encodeURIComponent(filename)}`, { method: 'DELETE' })
+  if (!res.ok) {
+    const err = await res.text()
+    throw new Error(err || 'Delete failed')
+  }
 }
 
 export async function searchDocs(query: string, top_k = 5): Promise<SearchResult> {

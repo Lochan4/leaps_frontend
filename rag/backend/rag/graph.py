@@ -14,8 +14,11 @@ Schema
 
 from __future__ import annotations
 
+import logging
 import uuid
 from neo4j import GraphDatabase
+
+logger = logging.getLogger(__name__)
 
 VECTOR_DIM = 1024         # BAAI/bge-m3
 VECTOR_INDEX = "chunk_embeddings"
@@ -118,6 +121,42 @@ class Neo4jGraph:
                     obj_type=t.get("object_type", "OTHER"),
                     pred=pred,
                     chunk_id=chunk_id,
+                )
+
+    def delete_document(self, filename: str) -> None:
+        """
+        Remove all Chunk nodes for a document and any Entity nodes that
+        are no longer referenced by any remaining Chunk.
+        """
+        with self.driver.session() as s:
+            # Find entities exclusively referenced by this document's chunks
+            result = s.run(
+                """
+                MATCH (e:Entity)<-[:CONTAINS]-(c:Chunk)
+                WITH e, collect(DISTINCT c.source) AS sources
+                WHERE size(sources) = 1 AND sources[0] = $src
+                RETURN e.name AS name
+                """,
+                src=filename,
+            )
+            orphan_names = [r["name"] for r in result]
+
+            # Delete all chunks (DETACH removes their relationships)
+            s.run(
+                "MATCH (c:Chunk {source: $src}) DETACH DELETE c",
+                src=filename,
+            )
+
+            # Delete entities that are now unreferenced
+            if orphan_names:
+                s.run(
+                    "UNWIND $names AS name MATCH (e:Entity {name: name}) DETACH DELETE e",
+                    names=orphan_names,
+                )
+                logger.info(
+                    "Deleted %d orphaned entities for document '%s'",
+                    len(orphan_names),
+                    filename,
                 )
 
     # ------------------------------------------------------------------
