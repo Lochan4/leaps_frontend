@@ -16,12 +16,27 @@ the user is already logged into.
 from __future__ import annotations
 
 import json
+import logging
 import os
 import platform
+import ssl
 import subprocess
+import time
 import urllib.error
 import urllib.request
 from typing import Optional
+
+logger = logging.getLogger(__name__)
+
+
+def _ssl_context() -> ssl.SSLContext:
+    """Return an SSL context using certifi's CA bundle when available."""
+    try:
+        import certifi
+        ctx = ssl.create_default_context(cafile=certifi.where())
+    except ImportError:
+        ctx = ssl.create_default_context()
+    return ctx
 
 _MESSAGES_URL  = "https://api.anthropic.com/v1/messages"
 _ANTHROPIC_VER = "2023-06-01"
@@ -113,11 +128,22 @@ def call(
         },
         method="POST",
     )
-    try:
-        with urllib.request.urlopen(req, timeout=120) as resp:
-            data = json.loads(resp.read())
-    except urllib.error.HTTPError as e:
-        detail = e.read().decode(errors="replace")[:400]
-        raise RuntimeError(f"Claude API error (HTTP {e.code}): {detail}")
-
-    return data["content"][0]["text"]
+    last_err: Exception | None = None
+    waits = [10, 30, 60, 120, 180]   # seconds between retries on 429
+    for attempt, wait in enumerate(waits):
+        try:
+            with urllib.request.urlopen(req, timeout=120, context=_ssl_context()) as resp:
+                data = json.loads(resp.read())
+            return data["content"][0]["text"]
+        except urllib.error.HTTPError as e:
+            detail = e.read().decode(errors="replace")[:400]
+            if e.code == 429:
+                logger.warning(
+                    "Rate limited (429) — retrying in %ds (attempt %d/%d)",
+                    wait, attempt + 1, len(waits),
+                )
+                time.sleep(wait)
+                last_err = RuntimeError(f"Claude API error (HTTP 429): {detail}")
+                continue
+            raise RuntimeError(f"Claude API error (HTTP {e.code}): {detail}")
+    raise last_err  # type: ignore[misc]
