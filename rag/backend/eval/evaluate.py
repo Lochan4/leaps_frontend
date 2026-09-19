@@ -196,12 +196,37 @@ def fuzzy_em(pred: str, golds: list[str]) -> float:
 
 _embedder = None
 
-def semantic_sim(pred: str, golds: list[str]) -> float:
+
+def _get_embedder():
     global _embedder
     if _embedder is None:
         from sentence_transformers import SentenceTransformer
         _embedder = SentenceTransformer("BAAI/bge-m3")
-    vecs = _embedder.encode([pred] + golds, normalize_embeddings=True, show_progress_bar=False)
+    return _embedder
+
+
+def best_sentence(chunk_text: str, question: str) -> str:
+    """
+    Split a chunk into sentences and return the one most semantically
+    similar to the question. This gives a short, focused "answer proxy"
+    instead of comparing a 400-word paragraph against a 2-5 word gold answer.
+    """
+    sentences = [s.strip() for s in re.split(r"(?<=[.!?])\s+", chunk_text) if s.strip()]
+    if not sentences:
+        return chunk_text
+    if len(sentences) == 1:
+        return sentences[0]
+    emb = _get_embedder()
+    vecs = emb.encode([question] + sentences, normalize_embeddings=True, show_progress_bar=False)
+    q_vec   = vecs[0]
+    s_vecs  = vecs[1:]
+    scores  = s_vecs @ q_vec
+    return sentences[int(scores.argmax())]
+
+
+def semantic_sim(pred: str, golds: list[str]) -> float:
+    emb  = _get_embedder()
+    vecs = emb.encode([pred] + golds, normalize_embeddings=True, show_progress_bar=False)
     return float((vecs[0] @ vecs[1:].T).max())
 
 
@@ -341,21 +366,27 @@ def main() -> None:
                  "page": r["page"], "score": r["score"], "type": r["type"]}
                 for r in raw_results
             ]
-            # Use the top-1 retrieved chunk as the "answer" proxy for metric computation
-            pred = raw_results[0]["text"] if raw_results else ""
+            top_text = raw_results[0]["text"] if raw_results else ""
+            # Use full chunk for EM/F1 (is the answer anywhere in the passage?)
+            pred = top_text
+            # Use best sentence for semantic similarity (fixes length mismatch)
+            pred_for_sim = best_sentence(top_text, s["question"]) if top_text else ""
         else:
             # Full pipeline — calls Claude Sonnet for answer generation
             try:
-                search_out = pipeline.search(s["question"], top_k=args.topk)
-                pred       = search_out["answer"]
-                sources    = search_out["sources"]
+                search_out  = pipeline.search(s["question"], top_k=args.topk)
+                pred        = search_out["answer"]
+                pred_for_sim = pred   # Claude answer is already short and focused
+                sources     = search_out["sources"]
             except Exception as exc:
                 print(f"  {i:>4}.  SKIP (search error: {exc})")
                 continue
 
         f1  = token_f1(pred, s["answers"])
         em  = fuzzy_em(pred, s["answers"])
-        sim = semantic_sim(pred, s["answers"])
+        # In retrieval-only mode use the best sentence for sim to avoid length mismatch
+        sim_text = pred_for_sim if args.retrieval_only else pred
+        sim = semantic_sim(sim_text, s["answers"])
         rec = retrieval_recall(sources, s["context"], k=args.topk)
 
         # LLM judge — optional, separate Haiku call (skipped in retrieval-only mode)
