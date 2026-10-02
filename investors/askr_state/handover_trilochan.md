@@ -1,0 +1,96 @@
+# Handover: trilochan
+
+Last updated: 2026-10-02 19:08
+
+*Source of truth: `handover_trilochan.json`*
+
+
+## Task
+Redesigned the investor syndicate platform from auto-project-creation with email ingestion to manual project creation with rich asset upload, Neo4j-backed knowledge graph traversal, and real-time graph visualization in the frontend during investor conversations.
+
+## Discussion
+The project pivoted from a passive email-ingestion model to an active asset-driven workflow. Syndicate members now manually create projects, upload any file type (pitch decks, MP3s, images, Excel), which get processed into a Neo4j knowledge graph. When investors converse (text or voice), the system traverses the graph in real-time and streams the traversal path to the frontend for live visualization. This replaces the previous form-only input model and makes the reasoning transparent to investors. Session 1 identified the need for Neo4j and frontend graph animation; this session rewrote all LLD files to reflect the new architecture and created a comprehensive SVG diagram showing the full lifecycle from auth through final investor analysis.
+
+## Accomplishments
+- [x] Rewrote 00-overview.md with new project lifecycle (draft → building_graph → open → consensus → rebuttals → final) and removed email ingestion entirely
+- [x] Created 02-asset-pipeline.md documenting manual upload, per-type extractors (PDF, MP3, images, Excel, video), chunking, embedding, and Neo4j ingestion
+- [x] Created 03-knowledge-graph.md with Neo4j node/edge schema, BFS traversal algorithm, SSE stream format, GraphRAG query flow, and frontend visualization spec
+- [x] Rewrote 04-conversation-engine.md to cover text + voice input, Whisper STT, SSE hookup, and how conversations capture investor views for group analysis
+- [x] Updated 07-database.md with new Postgres tables (conversation_sessions, conversation_messages, updated assets) and Neo4j schema alongside
+- [x] Rewrote 11-frontend.md with D3.js force graph, traversal animation (node pulse + edge draw), two-panel conversation layout, voice recording via MediaRecorder API, and traversal live feed sidebar
+- [x] Generated comprehensive lld-diagram.html with 157 SVG rectangles, 58 arrows, and 68 marker references showing full lifecycle from auth to final investor analysis in one zoomable canvas
+- [x] Removed email ingestion and notetaker webhook files entirely from the architecture
+
+## Next Actions
+1. Verify lld-diagram.html renders correctly in browser — check that all components are visible, arrows connect properly, and zoom/pan/reset controls work
+   *Why: The diagram is the single source of truth for architecture; any rendering issues will confuse implementation*
+2. Review all updated LLD files (00-overview.md, 02-asset-pipeline.md, 03-knowledge-graph.md, 04-conversation-engine.md, 07-database.md, 11-frontend.md) for completeness and internal consistency
+   *Why: These files now define the entire system; gaps or contradictions will cascade into implementation errors*
+3. Create 05-neo4j-setup.md documenting Neo4j instance setup, connection pooling, index strategy, and backup/recovery procedures
+   *Why: Neo4j is now a critical dependency; operational docs are missing*
+4. Create 06-asset-extraction.md with detailed specs for each extractor (PDF → text + metadata, MP3 → transcript + speaker diarization, images → vision description + OCR, Excel → structured table extraction)
+   *Why: Asset quality directly impacts knowledge graph quality; extractors need explicit specs*
+5. Create 08-api-endpoints.md documenting all REST/SSE endpoints: project CRUD, asset upload, conversation start/message, graph traversal stream, investor analysis endpoints
+   *Why: Frontend and backend need a contract; API spec is missing*
+6. Create 09-security.md covering authentication (OAuth2 for syndicate members), authorization (project-level access control), asset encryption at rest, and conversation privacy
+   *Why: Investor data is sensitive; security architecture is not yet documented*
+7. Create 10-deployment.md with Docker Compose setup for Postgres + Neo4j + backend + frontend, environment variables, and scaling notes
+   *Why: No deployment guidance exists; this is needed before any staging/production work*
+
+## Decisions
+- Use Neo4j as the knowledge graph backend instead of Postgres pgvector adjacency tables — Neo4j provides native graph traversal, better performance for complex relationship queries, and cleaner visualization of traversal paths for the frontend
+- Remove email ingestion and auto-project-creation entirely — Manual project creation gives syndicate members explicit control over what data enters the system; auto-creation was passive and error-prone
+- Make asset upload the primary input mechanism, supporting any file type (PDF, MP3, images, Excel, video) — Investors have diverse materials (pitch decks, founder recordings, location photos, financial models); a single asset type would be limiting
+- Stream knowledge graph traversal to the frontend in real-time via SSE — Investors need to see exactly which information the system used to answer their question; this builds trust and transparency
+- Use D3.js force-directed graph for frontend visualization with node pulse and edge draw animations — D3 is battle-tested for interactive graphs; force-directed layout makes relationships intuitive; animations make traversal visible without overwhelming the viewer
+- Support both text and voice input for investor conversations via Whisper STT — Investors may prefer speaking (faster, more natural); voice input removes friction and captures tone/emphasis that text misses
+- Capture investor views through conversation itself rather than form responses alone — Conversational input is richer (questions reveal thesis, follow-ups show depth of thinking); forms are rigid and often incomplete
+
+## Files In Play
+- `/Users/saitrilochan/Documents/investors/lld/00-overview.md`
+- `/Users/saitrilochan/Documents/investors/lld/02-asset-pipeline.md`
+- `/Users/saitrilochan/Documents/investors/lld/03-knowledge-graph.md`
+- `/Users/saitrilochan/Documents/investors/lld/04-conversation-engine.md`
+- `/Users/saitrilochan/Documents/investors/lld/07-database.md`
+- `/Users/saitrilochan/Documents/investors/lld/11-frontend.md`
+- `/Users/saitrilochan/Documents/investors/lld-diagram.html`
+
+## Relational Files
+- `/Users/saitrilochan/Documents/investors/lld/01-auth.md` (imported_by): Auth is the entry point to the system; all other LLD files assume auth is already handled
+
+## Uncommitted Files
+- `idea/ats-idea.md`
+- `idea/core-idea.md`
+- `idea/product.md`
+- `trilochan-website/askr_state/architecture.md`
+- `trilochan-website/askr_state/blockers.md`
+- `trilochan-website/askr_state/current_task_trilochan.md`
+- `trilochan-website/askr_state/decisions.md`
+- `trilochan-website/askr_state/failed_approaches.md`
+- `trilochan-website/askr_state/goals.md`
+- `trilochan-website/askr_state/handover_trilochan.md`
+- `trilochan-website/askr_state/implementation_state.md`
+- `trilochan-website/askr_state/notifications.log`
+- `trilochan-website/askr_state/project_brief.md`
+- `.DS_Store`
+- `AI-Audit-Engine/`
+- `Heuretos/`
+- `Research_Buddy/`
+- `askr/`
+- `financials/`
+- `heuretos pitch/`
+- `investors/`
+- `leaps-pitch-deck/`
+- `leaps-preseed.pdf`
+- `leaps_bippin/`
+- `leaps_vercel/`
+- `mitigata/`
+- `pitch pdfs/`
+- `projects/`
+- `trilochan-website/.gitignore`
+- `trilochan-website/GalgoVF.ttf`
+- `trilochan-website/index.html`
+- `trilochan-website/script.js`
+- `trilochan-website/style.css`
+- `vaultsql/`
+- `vee/`
