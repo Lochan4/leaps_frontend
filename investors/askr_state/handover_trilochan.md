@@ -1,67 +1,76 @@
 # Handover: trilochan
 
-Last updated: 2026-10-02 19:08
+Last updated: 2026-10-03 13:34
 
 *Source of truth: `handover_trilochan.json`*
 
 
 ## Task
-Redesigned the investor syndicate platform from auto-project-creation with email ingestion to manual project creation with rich asset upload, Neo4j-backed knowledge graph traversal, and real-time graph visualization in the frontend during investor conversations.
+Designed and documented a 10-day parallel build plan for an AI-powered investor syndicate platform using WorkOS AuthKit for auth, pgvector (Supabase) for knowledge graph storage, FastAPI + Next.js 14 for backend/frontend, and created an interactive HTML timeline showing daily deliverables, service dependencies, and LLM API cost implications.
 
 ## Discussion
-The project pivoted from a passive email-ingestion model to an active asset-driven workflow. Syndicate members now manually create projects, upload any file type (pitch decks, MP3s, images, Excel), which get processed into a Neo4j knowledge graph. When investors converse (text or voice), the system traverses the graph in real-time and streams the traversal path to the frontend for live visualization. This replaces the previous form-only input model and makes the reasoning transparent to investors. Session 1 identified the need for Neo4j and frontend graph animation; this session rewrote all LLD files to reflect the new architecture and created a comprehensive SVG diagram showing the full lifecycle from auth through final investor analysis.
+Session 1 proposed a 7-day build plan with Neo4j; this session pivoted to pgvector on Supabase (eliminating a separate service and guaranteeing project isolation via FK constraints), replaced custom auth with WorkOS AuthKit (removing password reset, TOTP enrollment, and invite token management from scope), and extended the timeline to 10 days to account for realistic integration complexity. The user rejected the initial 7-day estimate as inflated and requested a 10-day breakdown with clear daily milestones, service costs, and LLM API usage callouts. WorkOS replaces Supabase Auth entirely; FastAPI now validates WorkOS JWTs directly. All external services (Claude, OpenAI, Redis, R2, Resend, Serper) are documented with free-tier coverage and cost implications.
 
 ## Accomplishments
-- [x] Rewrote 00-overview.md with new project lifecycle (draft → building_graph → open → consensus → rebuttals → final) and removed email ingestion entirely
-- [x] Created 02-asset-pipeline.md documenting manual upload, per-type extractors (PDF, MP3, images, Excel, video), chunking, embedding, and Neo4j ingestion
-- [x] Created 03-knowledge-graph.md with Neo4j node/edge schema, BFS traversal algorithm, SSE stream format, GraphRAG query flow, and frontend visualization spec
-- [x] Rewrote 04-conversation-engine.md to cover text + voice input, Whisper STT, SSE hookup, and how conversations capture investor views for group analysis
-- [x] Updated 07-database.md with new Postgres tables (conversation_sessions, conversation_messages, updated assets) and Neo4j schema alongside
-- [x] Rewrote 11-frontend.md with D3.js force graph, traversal animation (node pulse + edge draw), two-panel conversation layout, voice recording via MediaRecorder API, and traversal live feed sidebar
-- [x] Generated comprehensive lld-diagram.html with 157 SVG rectangles, 58 arrows, and 68 marker references showing full lifecycle from auth to final investor analysis in one zoomable canvas
-- [x] Removed email ingestion and notetaker webhook files entirely from the architecture
+- [x] Rewrote 7-day plan to 10-day parallel build plan with realistic time estimates: MVP in 4-5 weeks, production-ready in 6-7 weeks
+- [x] Replaced Neo4j with pgvector on Supabase — eliminates separate graph service, guarantees project isolation via FK constraints, simplifies deployment
+- [x] Replaced custom auth system with WorkOS AuthKit — removes invites table, TOTP enrollment, password reset, session management from backend scope
+- [x] Created interactive HTML build plan (build-plan.html) with 10-day timeline table at top, daily backend/frontend task breakdown, service dependency matrix, and LLM API cost callouts
+- [x] Documented all 8 external services with free-tier coverage: Supabase, WorkOS, Claude API, OpenAI, Upstash Redis, Cloudflare R2, Resend, Serper
+- [x] Provided detailed Day 1-10 breakdown: Day 1 (foundation + auth), Day 2 (asset pipeline), Day 3 (GraphRAG + conversation), Day 4 (flow canvas), Day 5 (analysis pipeline), Day 6-7 (wire remaining mocks + error states), Day 8-9 (integration testing + deployment), Day 10 (polish + production validation)
+- [x] Removed email ingestion, notetaker webhook, and Neo4j from architecture entirely
+- [x] Updated database schema to use pgvector instead of Neo4j: chunks, entities, chunk_mentions, chunk_edges, cell_conversation_turns all in Postgres with HNSW indexes
+- [x] Documented WorkOS integration: JWT validation in FastAPI, webhook handler for user.created events, pending_invites table for pre-signup project assignment
 
 ## Next Actions
-1. Verify lld-diagram.html renders correctly in browser — check that all components are visible, arrows connect properly, and zoom/pan/reset controls work
-   *Why: The diagram is the single source of truth for architecture; any rendering issues will confuse implementation*
-2. Review all updated LLD files (00-overview.md, 02-asset-pipeline.md, 03-knowledge-graph.md, 04-conversation-engine.md, 07-database.md, 11-frontend.md) for completeness and internal consistency
-   *Why: These files now define the entire system; gaps or contradictions will cascade into implementation errors*
-3. Create 05-neo4j-setup.md documenting Neo4j instance setup, connection pooling, index strategy, and backup/recovery procedures
-   *Why: Neo4j is now a critical dependency; operational docs are missing*
-4. Create 06-asset-extraction.md with detailed specs for each extractor (PDF → text + metadata, MP3 → transcript + speaker diarization, images → vision description + OCR, Excel → structured table extraction)
-   *Why: Asset quality directly impacts knowledge graph quality; extractors need explicit specs*
-5. Create 08-api-endpoints.md documenting all REST/SSE endpoints: project CRUD, asset upload, conversation start/message, graph traversal stream, investor analysis endpoints
-   *Why: Frontend and backend need a contract; API spec is missing*
-6. Create 09-security.md covering authentication (OAuth2 for syndicate members), authorization (project-level access control), asset encryption at rest, and conversation privacy
-   *Why: Investor data is sensitive; security architecture is not yet documented*
-7. Create 10-deployment.md with Docker Compose setup for Postgres + Neo4j + backend + frontend, environment variables, and scaling notes
-   *Why: No deployment guidance exists; this is needed before any staging/production work*
+1. Verify build-plan.html renders correctly in browser — check 10-day timeline table, collapsible day sections, service matrix, and LLM cost callouts are all visible and properly formatted
+   *Why: The HTML is the single source of truth for the build plan; any rendering issues will confuse implementation and timeline tracking*
+2. Create .env.example file documenting all required API keys and environment variables: WORKOS_API_KEY, WORKOS_CLIENT_ID, WORKOS_COOKIE_PASSWORD, ANTHROPIC_API_KEY, OPENAI_API_KEY, DATABASE_URL, REDIS_URL, R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET_NAME, RESEND_API_KEY, SERPER_API_KEY
+   *Why: Developers need a clear reference for all external service credentials before Day 1 begins*
+3. Create pre-Day-1 checklist (checklist.md) with all service signup links, credential setup steps, local environment validation commands, and Docker Compose setup for local Redis
+   *Why: Eliminates setup friction and ensures both backend and frontend agents start with identical environments*
+4. Update 00-overview.md to reflect pgvector instead of Neo4j, WorkOS instead of custom auth, and 10-day build timeline
+   *Why: LLD files must reflect the current architecture; stale docs cascade into implementation errors*
+5. Create 01-auth-workos.md documenting WorkOS AuthKit setup, JWT validation in FastAPI, webhook handling for user.created events, pending_invites table schema, and session lifecycle
+   *Why: Auth is the entry point to the system; explicit docs prevent integration bugs*
+6. Create 02-pgvector-schema.md with full SQL schema (chunks, entities, chunk_mentions, chunk_edges, cell_conversation_turns), HNSW index strategy, and BFS traversal query examples in Python
+   *Why: pgvector replaces Neo4j; developers need explicit SQL patterns for graph traversal*
+7. Begin Day 1 implementation: create Supabase project, enable pgvector extension, run all migrations, scaffold FastAPI + Next.js projects, set up WorkOS organization
+   *Why: Day 1 is the foundation; all other days depend on these services being live*
 
 ## Decisions
-- Use Neo4j as the knowledge graph backend instead of Postgres pgvector adjacency tables — Neo4j provides native graph traversal, better performance for complex relationship queries, and cleaner visualization of traversal paths for the frontend
-- Remove email ingestion and auto-project-creation entirely — Manual project creation gives syndicate members explicit control over what data enters the system; auto-creation was passive and error-prone
-- Make asset upload the primary input mechanism, supporting any file type (PDF, MP3, images, Excel, video) — Investors have diverse materials (pitch decks, founder recordings, location photos, financial models); a single asset type would be limiting
-- Stream knowledge graph traversal to the frontend in real-time via SSE — Investors need to see exactly which information the system used to answer their question; this builds trust and transparency
-- Use D3.js force-directed graph for frontend visualization with node pulse and edge draw animations — D3 is battle-tested for interactive graphs; force-directed layout makes relationships intuitive; animations make traversal visible without overwhelming the viewer
-- Support both text and voice input for investor conversations via Whisper STT — Investors may prefer speaking (faster, more natural); voice input removes friction and captures tone/emphasis that text misses
-- Capture investor views through conversation itself rather than form responses alone — Conversational input is richer (questions reveal thesis, follow-ups show depth of thinking); forms are rigid and often incomplete
+- Use pgvector on Supabase instead of Neo4j for knowledge graph storage — Eliminates a separate service, guarantees project isolation via FK constraints, HNSW index is fast enough for syndicate scale, simplifies deployment and cost
+- Replace custom auth system with WorkOS AuthKit — Removes password reset, TOTP enrollment, invite token management, and session management from scope; WorkOS handles MFA, invitations, and user lifecycle end-to-end
+- Extend build timeline from 7 days to 10 days — Realistic integration complexity, service setup overhead, and UI iteration rounds require buffer; MVP still ships in 4-5 weeks, production in 6-7 weeks
+- Disable Supabase RLS and enforce access control in FastAPI instead — WorkOS issues JWTs, not Supabase Auth tokens; FastAPI is the only DB client and has full context of user identity and role; cleaner than filtering every query
+- Use Serper free tier for competitive scan (deferred to Day 5) — Free tier covers MVP scale; can upgrade to paid if volume exceeds limits
+- Defer voice input (Whisper + MediaRecorder) to Week 2 — Non-critical path; text-only chat is sufficient for MVP; voice adds UI complexity without blocking core flow
+- Defer admin user management UI and audit log UI to Week 2 — Can manage users via Supabase dashboard and WorkOS console; internal tools can be added after MVP
+
+## User-Rejected Approaches
+- **7-day build plan with inflated time estimates** — "bro lets be real here, these are over inflated values, tell me the real time that is going to take" (domain: build-plan.html, timeline estimates)
+- **Keep Neo4j as the knowledge graph backend** — "instead of using neo4j is there any other way we can make sure that the graphrag can be independent for each of the project" (domain: architecture, database choice)
+- **Include email ingestion and auto-project-creation in the 10-day plan** — "even this should be built in the first week saar. [remove] drop all of this [Image #7]" (domain: feature scope, Day 1-7 deliverables)
+
+## Failed Approaches
+- 7-day parallel build plan with Neo4j and custom auth — User rejected as inflated; Neo4j adds operational overhead and project isolation complexity; custom auth duplicates WorkOS functionality
 
 ## Files In Play
-- `/Users/saitrilochan/Documents/investors/lld/00-overview.md`
-- `/Users/saitrilochan/Documents/investors/lld/02-asset-pipeline.md`
-- `/Users/saitrilochan/Documents/investors/lld/03-knowledge-graph.md`
-- `/Users/saitrilochan/Documents/investors/lld/04-conversation-engine.md`
-- `/Users/saitrilochan/Documents/investors/lld/07-database.md`
-- `/Users/saitrilochan/Documents/investors/lld/11-frontend.md`
-- `/Users/saitrilochan/Documents/investors/lld-diagram.html`
+- `/Users/saitrilochan/Documents/investors/build-plan.html`
 
 ## Relational Files
-- `/Users/saitrilochan/Documents/investors/lld/01-auth.md` (imported_by): Auth is the entry point to the system; all other LLD files assume auth is already handled
+- `/Users/saitrilochan/Documents/investors/lld/00-overview.md` (configures): Must be updated to reflect pgvector, WorkOS, and 10-day timeline
+- `/Users/saitrilochan/Documents/investors/lld/01-auth.md` (imported_by): Auth is the entry point; needs rewrite for WorkOS AuthKit
 
 ## Uncommitted Files
 - `idea/ats-idea.md`
 - `idea/core-idea.md`
 - `idea/product.md`
+- `investors/askr_state/decisions.jsonl`
+- `investors/askr_state/failed_approaches.md`
+- `investors/askr_state/goals.jsonl`
+- `investors/askr_state/implementation_trilochan.jsonl`
+- `investors/askr_state/rejected_decisions.jsonl`
 - `trilochan-website/askr_state/architecture.md`
 - `trilochan-website/askr_state/blockers.md`
 - `trilochan-website/askr_state/current_task_trilochan.md`
@@ -79,7 +88,15 @@ The project pivoted from a passive email-ingestion model to an active asset-driv
 - `askr/`
 - `financials/`
 - `heuretos pitch/`
-- `investors/`
+- `investors/.claude/`
+- `investors/.gitattributes`
+- `investors/.gitignore`
+- `investors/CLAUDE.md`
+- `investors/askr_state/sessions/d278cf35-24ba-4efa-a9c2-c546e9e4b5b9.json`
+- `investors/build-plan.html`
+- `investors/demo.html`
+- `investors/lld-diagram.html`
+- `investors/lld/`
 - `leaps-pitch-deck/`
 - `leaps-preseed.pdf`
 - `leaps_bippin/`
