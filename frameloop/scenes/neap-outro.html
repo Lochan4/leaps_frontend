@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Neap: wordmark</title>
+<link rel="stylesheet" href="neap.css">
+<style>
+  .layer { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+  .word { position: absolute; left: 150px; top: 110px; font-size: 600px; font-weight: 900; line-height: 600px; white-space: nowrap; }
+  #outline .word { color: transparent; -webkit-text-stroke: 4px var(--deep); }
+  #filled .word { color: var(--deep); }
+  #line3 { left: 162px; top: 850px; width: 1200px; height: 84px; }
+  #line3 span { font-size: 60px; line-height: 84px; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="outline" class="layer"><div class="word display">Neap</div></div>
+  <div id="filled" class="layer"><div class="word display">Neap</div></div>
+  <div id="line3" class="rise text"><span>Tide windows for sea kayakers.</span></div>
+</div>
+<script type="module">
+import { defineScene, springAt, presets } from '../engine/motion.js';
+
+const W = 1920;
+const H = 1080;
+const TIDE_RISE = { stiffness: 40, damping: 12.6, mass: 1 }; // critically damped, about three beats
+const el = {};
+let baseline = 0;
+let capHeight = 0;
+
+defineScene({
+  setup(ctx) {
+    for (const id of ['stage', 'filled', 'line3']) el[id] = document.getElementById(id);
+    el.stage.style.transform = `scale(${ctx.width / W})`;
+    el.line3 = el.line3.firstElementChild;
+    // Measure the real glyphs so the water level is placed relative to the letters, not the box.
+    const word = el.filled.querySelector('.word');
+    const cs = getComputedStyle(word);
+    const c = document.createElement('canvas').getContext('2d');
+    c.font = `${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+    const m = c.measureText('N');
+    const lineH = parseFloat(cs.lineHeight);
+    const fontH = m.fontBoundingBoxAscent + m.fontBoundingBoxDescent;
+    baseline = parseFloat(cs.top) + (lineH - fontH) / 2 + m.fontBoundingBoxAscent;
+    capHeight = m.actualBoundingBoxAscent;
+  },
+
+  render(t, ctx) {
+    // Beats 0-3: the tide rises into the letters and settles a little above half.
+    const rise = springAt(t, ctx.beatAt(0), TIDE_RISE);
+    const level = H + 40 + (baseline - 0.56 * capHeight - (H + 40)) * rise;
+    const swell = 4 + 10 * rise;
+    const pts = [];
+    for (let x = 0; x <= W; x += 32) {
+      const y = level + swell * Math.sin(x / 110 + t * 2.6) + 0.5 * swell * Math.sin(x / 47 - t * 1.7);
+      pts.push(`${x}px ${y.toFixed(2)}px`);
+    }
+    el.filled.style.clipPath = `polygon(${pts.join(',')}, ${W}px ${H}px, 0px ${H}px)`;
+
+    // Beat 4: one plain line.
+    const s = springAt(t, ctx.beatAt(4), presets.gentle);
+    el.line3.style.transform = `translateY(${((1 - s) * 105).toFixed(3)}%)`;
+  },
+});
+</script>
+</body>
+</html>

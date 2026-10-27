@@ -1,0 +1,63 @@
+/* Neap: shared tokens for the demo scenes. No transitions or animations here, ever:
+   all motion comes from render(t). */
+@font-face {
+  font-family: 'Big Shoulders Display';
+  src: url('../assets/fonts/BigShouldersDisplay.ttf') format('truetype');
+  font-weight: 100 900;
+}
+@font-face {
+  font-family: 'Newsreader';
+  src: url('../assets/fonts/Newsreader.ttf') format('truetype');
+  font-weight: 200 800;
+}
+
+:root {
+  --fog: #d9e2de;   /* sea fog: the sky */
+  --deep: #12344d;  /* deep water */
+  --tide: #2b7a78;  /* tide line */
+  --buoy: #f2b705;  /* buoy yellow: the one accent */
+  --sand: #b9a88c;  /* wet sand: secondary */
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--fog);
+}
+
+/* Designed at 1920x1080 and scaled to the render viewport in setup(). */
+#stage {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+  transform-origin: 0 0;
+  background: var(--fog);
+  color: var(--deep);
+}
+
+.display {
+  font-family: 'Big Shoulders Display', 'Arial Narrow', sans-serif;
+  font-feature-settings: 'tnum' 1;
+  line-height: 0.8;
+}
+
+.text {
+  font-family: 'Newsreader', Georgia, serif;
+  font-variation-settings: 'opsz' 36;
+  line-height: 1.35;
+}
+
+/* A rising reveal: the child sits below its own box and climbs into view. */
+.rise {
+  position: absolute;
+  overflow: hidden;
+}
+.rise > span {
+  display: block;
+  will-change: transform;
+}

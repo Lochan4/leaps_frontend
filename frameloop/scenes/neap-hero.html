@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Neap: high water</title>
+<link rel="stylesheet" href="neap.css">
+<style>
+  #chart { position: absolute; left: 0; top: 0; }
+  #water { fill: var(--deep); }
+  #edge { fill: none; stroke: var(--tide); stroke-width: 6; stroke-linejoin: round; }
+  #buoy { fill: var(--buoy); }
+  .hour { position: absolute; top: 52px; font-size: 32px; font-weight: 600; opacity: 0.5; }
+  #hw { left: 96px; bottom: 28px; width: 900px; height: 330px; }
+  #hw span { font-size: 330px; font-weight: 800; line-height: 330px; color: var(--fog); }
+  #line1 { left: 1010px; bottom: 92px; width: 720px; height: 140px; }
+  #line1 span { font-size: 46px; line-height: 70px; color: var(--fog); }
+</style>
+</head>
+<body>
+<div id="stage">
+  <svg id="chart" width="1920" height="1080" viewBox="0 0 1920 1080">
+    <path id="water"></path>
+    <path id="edge"></path>
+    <circle id="buoy" r="17"></circle>
+  </svg>
+  <div class="hour display" style="left: 24px">00:00</div>
+  <div class="hour display" style="left: 504px">06:00</div>
+  <div class="hour display" style="left: 984px">12:00</div>
+  <div class="hour display" style="left: 1464px">18:00</div>
+  <div id="hw" class="rise display"><span>06:42</span></div>
+  <div id="line1" class="rise text"><span>High water at Tarbert. The current stops, so you can cross.</span></div>
+</div>
+<script type="module">
+import { defineScene, springAt, presets, smoothstep } from '../engine/motion.js';
+
+const W = 1920;
+const H = 1080;
+const HW = 6.7;        // high water, hours
+const PERIOD = 12.42;  // semidiurnal tide
+const MID = 520;
+const AMP = 190;
+const X_HW = (HW / 24) * W;
+const tide = (h) => (Math.cos((2 * Math.PI * (h - HW)) / PERIOD) + 0.12 * Math.cos((Math.PI * (h - HW)) / PERIOD)) / 1.12;
+
+// The day's curve is formed left of the head and still a flat calm sea to its right.
+const yAt = (x, t, head, ripple) =>
+  MID - AMP * tide((x / W) * 24) * (1 - smoothstep(head, head + 260, x)) + ripple * Math.sin(x / 85 - t * 2.4);
+
+const el = {};
+
+defineScene({
+  setup(ctx) {
+    for (const id of ['stage', 'water', 'edge', 'buoy', 'hw', 'line1']) el[id] = document.getElementById(id);
+    el.stage.style.transform = `scale(${ctx.width / W})`;
+    el.hw = el.hw.firstElementChild;
+    el.line1 = el.line1.firstElementChild;
+  },
+
+  render(t, ctx) {
+    // Beats 0-2: the buoy rides the rising tide to high water. Beat 3: the rest of the day forms.
+    const toHighWater = springAt(t, ctx.beatAt(0), presets.heavy);
+    const restOfDay = springAt(t, ctx.beatAt(3), presets.gentle);
+    const head = X_HW * toHighWater + (W + 300 - X_HW) * restOfDay;
+    const ripple = 5 * springAt(t, ctx.beatAt(4), presets.gentle);
+
+    let d = '';
+    for (let x = 0; x <= W; x += 8) d += `${x ? 'L' : 'M'}${x},${yAt(x, t, head, ripple).toFixed(2)}`;
+    el.edge.setAttribute('d', d);
+    el.water.setAttribute('d', `${d}L${W},${H}L0,${H}Z`);
+
+    const bx = X_HW * toHighWater;
+    const bob = 6 * Math.sin((Math.PI * (t - ctx.beatAt(0))) / ctx.beatLen) * springAt(t, ctx.beatAt(2), presets.gentle);
+    el.buoy.setAttribute('cx', bx.toFixed(2));
+    el.buoy.setAttribute('cy', (yAt(bx, t, head, ripple) - 15 + bob).toFixed(2));
+
+    // Beat 2: the time of high water rises out of the water as the buoy arrives.
+    const n = springAt(t, ctx.beatAt(2), presets.snappy);
+    el.hw.style.transform = `translateY(${((1 - n) * 105).toFixed(3)}%)`;
+    // Beat 5: the line that says why it matters.
+    const s = springAt(t, ctx.beatAt(5), presets.gentle);
+    el.line1.style.transform = `translateY(${((1 - s) * 105).toFixed(3)}%)`;
+  },
+});
+</script>
+</body>
+</html>

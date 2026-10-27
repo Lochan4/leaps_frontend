@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Neap: the slack window</title>
+<link rel="stylesheet" href="neap.css">
+<style>
+  #chart { position: absolute; left: 0; top: 0; }
+  #band { fill: var(--buoy); }
+  #bandWater { fill: var(--tide); }
+  #water { fill: var(--deep); }
+  #cursorSky { stroke: var(--deep); stroke-width: 4; }
+  #cursorWater { stroke: var(--fog); stroke-width: 4; }
+  .chev { fill: none; stroke: var(--fog); stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; }
+  .edge-time { top: 600px; height: 150px; }
+  .edge-time span { font-size: 150px; font-weight: 700; line-height: 150px; color: var(--fog); }
+  #tStart { left: 0; width: 787px; text-align: right; }
+  #tEnd { left: 1336px; width: 520px; }
+  #line2 { left: 96px; top: 84px; width: 680px; height: 140px; }
+  #line2 span { font-size: 50px; line-height: 70px; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <svg id="chart" width="1920" height="1080" viewBox="0 0 1920 1080">
+    <defs><clipPath id="waterClip"><path id="clipShape"></path></clipPath></defs>
+    <rect id="band" y="0" height="1080"></rect>
+    <line id="cursorSky" y1="0" y2="1080"></line>
+    <path id="water"></path>
+    <g clip-path="url(#waterClip)">
+      <rect id="bandWater" y="0" height="1080"></rect>
+      <line id="cursorWater" y1="0" y2="1080"></line>
+    </g>
+    <g id="chevrons"></g>
+  </svg>
+  <div id="tStart" class="rise edge-time display"><span>06:31</span></div>
+  <div id="tEnd" class="rise edge-time display"><span>07:18</span></div>
+  <div id="line2" class="rise text"><span>Your window:<br>47 minutes of slack water.</span></div>
+</div>
+<script type="module">
+import { defineScene, springAt, presets } from '../engine/motion.js';
+
+const W = 1920;
+const H = 1080;
+const HW = 6.7;
+const PERIOD = 12.42;
+const T0 = 5.25;       // window shown: 05:15 to 08:15
+const SPAN = 3;
+const START = 6 + 31 / 60;
+const END = 7 + 18 / 60;
+const xOf = (h) => ((h - T0) / SPAN) * W;
+const tide = (h) => (Math.cos((2 * Math.PI * (h - HW)) / PERIOD) + 0.12 * Math.cos((Math.PI * (h - HW)) / PERIOD)) / 1.12;
+// Current is the rate of change of the tide: d(tide)/dh.
+const current = (h) => (-(2 * Math.PI / PERIOD) * Math.sin((2 * Math.PI * (h - HW)) / PERIOD) - 0.12 * (Math.PI / PERIOD) * Math.sin((Math.PI * (h - HW)) / PERIOD)) / 1.12;
+const yAt = (x) => 250 + (1 - tide(T0 + (x / W) * SPAN)) * 1000;
+
+const CHEVRONS = 22;
+const GAP = 96;
+const ROW_Y = 930;
+const el = {};
+
+defineScene({
+  setup(ctx) {
+    for (const id of ['stage', 'band', 'bandWater', 'water', 'clipShape', 'cursorSky', 'cursorWater', 'chevrons', 'tStart', 'tEnd', 'line2']) el[id] = document.getElementById(id);
+    el.stage.style.transform = `scale(${ctx.width / W})`;
+    for (const k of ['tStart', 'tEnd', 'line2']) el[k] = el[k].firstElementChild;
+    // The water surface does not move in this scene, so build it once.
+    let d = '';
+    for (let x = 0; x <= W; x += 8) d += `${x ? 'L' : 'M'}${x},${yAt(x).toFixed(2)}`;
+    d += `L${W},${H}L0,${H}Z`;
+    el.water.setAttribute('d', d);
+    el.clipShape.setAttribute('d', d);
+    const ns = 'http://www.w3.org/2000/svg';
+    el.chev = [];
+    for (let i = 0; i < CHEVRONS; i++) {
+      const p = document.createElementNS(ns, 'polyline');
+      p.setAttribute('class', 'chev');
+      p.setAttribute('points', '-14,-22 14,0 -14,22');
+      el.chevrons.appendChild(p);
+      el.chev.push(p);
+    }
+  },
+
+  render(t, ctx) {
+    // The cursor is "now": it crosses high water exactly on beat 4.
+    const now = HW + (t - ctx.beatAt(4)) * 0.43;
+    const cx = xOf(now).toFixed(2);
+    for (const c of [el.cursorSky, el.cursorWater]) { c.setAttribute('x1', cx); c.setAttribute('x2', cx); }
+
+    // Beat 1: the slack window opens out from high water.
+    const open = springAt(t, ctx.beatAt(1), presets.snappy);
+    const left = xOf(HW) - (xOf(HW) - xOf(START)) * open;
+    const right = xOf(HW) + (xOf(END) - xOf(HW)) * open;
+    for (const r of [el.band, el.bandWater]) { r.setAttribute('x', left.toFixed(2)); r.setAttribute('width', Math.max(0, right - left).toFixed(2)); }
+
+    // Current arrows: displacement is proportional to the tide height itself (the integral of the
+    // current), so this stays a closed-form function of t. Direction flattens through slack and flips.
+    const drift = 3200 * (tide(now) - tide(HW - 1));
+    const dir = Math.tanh(12 * current(now));
+    const loop = CHEVRONS * GAP;
+    el.chev.forEach((p, i) => {
+      const x = ((((i * GAP + drift) % loop) + loop) % loop) - GAP;
+      p.setAttribute('transform', `translate(${x.toFixed(2)},${ROW_Y}) scale(${dir.toFixed(4)},1)`);
+    });
+
+    // Beats 2 and 2.5: the window's edges, start then end. Beat 5: what it means.
+    const a = springAt(t, ctx.beatAt(2), presets.snappy);
+    const b = springAt(t, ctx.beatAt(2.5), presets.snappy);
+    const s = springAt(t, ctx.beatAt(5), presets.gentle);
+    el.tStart.style.transform = `translateY(${((1 - a) * 105).toFixed(3)}%)`;
+    el.tEnd.style.transform = `translateY(${((1 - b) * 105).toFixed(3)}%)`;
+    el.line2.style.transform = `translateY(${((1 - s) * 105).toFixed(3)}%)`;
+  },
+});
+</script>
+</body>
+</html>

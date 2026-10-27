@@ -1,0 +1,24 @@
+{
+  "name": "frameloop",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Headless render loop: Playwright renders time-driven HTML scenes frame by frame, ffmpeg measures every frame, Claude critiques and rewrites until every scene scores 8/10.",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "setup": "npx playwright install chromium",
+    "lint": "node engine/cli.js lint",
+    "preview": "node engine/cli.js preview",
+    "render": "node engine/cli.js render",
+    "analyze": "node engine/cli.js analyze",
+    "loop": "node engine/cli.js loop",
+    "loop:draft": "node engine/cli.js loop --draft",
+    "loop:offline": "node engine/cli.js loop --no-ai"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "0.133.0",
+    "playwright": "1.56.0"
+  }
+}
